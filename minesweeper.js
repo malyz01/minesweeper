@@ -4,63 +4,63 @@ document.addEventListener("contextmenu", checkForWin);
 
 // Define your `board` object here!
 var board = {
-  cells: [
-    { row: 1, col: 1, isMine: false, hidden: true },
-    { row: 1, col: 2, isMine: false, hidden: true },
-    { row: 1, col: 3, isMine: true, hidden: true },
-    { row: 1, col: 4, isMine: false, hidden: true },
-    { row: 2, col: 1, isMine: false, hidden: true },
-    { row: 2, col: 2, isMine: true, hidden: true },
-    { row: 2, col: 3, isMine: false, hidden: true },
-    { row: 2, col: 4, isMine: true, hidden: true },
-    { row: 3, col: 1, isMine: true, hidden: true },
-    { row: 3, col: 2, isMine: false, hidden: true },
-    { row: 3, col: 3, isMine: false, hidden: true },
-    { row: 3, col: 4, isMine: false, hidden: true },
-    { row: 4, col: 1, isMine: false, hidden: true },
-    { row: 4, col: 2, isMine: true, hidden: true },
-    { row: 4, col: 3, isMine: true, hidden: true },
-    { row: 4, col: 4, isMine: false, hidden: true }
-  ]
+  cells: []
 };
 
-function generateRandomBool() {
-  return Math.random() >= 0.3;
+function getNoOfBomb() {
+  return board.cells.filter(c => c.isMine).length;
 }
 
-// function generateBoard(num = 2) {
-//   if (num <= 1) {
-//     num = 2;
-//   }
-//   const boardSize = num * num;
-//   const boardRow = [];
-//   const boardCol = [];
-//   let countRow = 1;
-//   for (var i = 0; boardRow.length < boardSize; i++) {
-//     boardRow.push(countRow);
-//     if (boardRow.filter(r => r === countRow).length >= num) {
-//       countRow++;
-//     }
-//   }
+function generateRandomBool(num) {
+  return Math.random() >= 0.6;
+}
 
-//   for (var i = 0; i < num; i++) {
-//     boardCol.push(i + 1);
-//   }
+function generateRow(num, boardSize) {
+  let countRow = 1;
+  let boardRow = [];
+  for (var i = 0; boardRow.length < boardSize; i++) {
+    boardRow.push(countRow);
+    if (boardRow.filter(r => r === countRow).length >= num) {
+      countRow++;
+    }
+  }
+  return boardRow;
+}
 
-//   for (var i = 0; i < boardSize; i++) {
-//     board.cells[i] = {
-//       row: boardRow[i],
-//       cell: i,
-//       isMine: true,
-//       hidden: true
-//     };
-//   }
-// }
+function generateCol(num, boardSize) {
+  let countCol = 1;
+  let boardCol = [];
+  for (var i = 0; i < boardSize; i++) {
+    boardCol.push(countCol);
+    countCol++;
+    if (countCol > num) {
+      countCol = 1;
+    }
+  }
+  return boardCol;
+}
 
-function startGame() {
+function generateBoard(num = 2) {
+  if (num <= 1) {
+    num = 2;
+  }
+  const boardSize = num * num;
+  const boardRow = generateRow(num, boardSize);
+  const boardCol = generateCol(num, boardSize);
+
+  for (var i = 0; i < boardSize; i++) {
+    board.cells[i] = {
+      row: boardRow[i],
+      col: boardCol[i],
+      isMine: generateRandomBool(),
+      hidden: true
+    };
+  }
+}
+
+function startGame(x) {
   // Don't remove this function call: it makes the game work!
-  // generateBoard(4);
-  console.log(board);
+  generateBoard(6);
   board.cells.forEach(x => (x.surroundingMines = countSurroundingMines(x)));
   lib.initBoard();
 }
